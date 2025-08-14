@@ -10,7 +10,7 @@ import re
 from datetime import datetime
 
 from .models import ScanRequest, ScanResult, URLInfo, DomainStats, ScanStatus
-from .utils import clean_url, has_extension, get_user_agents
+from .utils import clean_url, has_extension
 
 class SpiderXCore:
     def __init__(self):
@@ -94,7 +94,7 @@ class SpiderXCore:
         
         try:
             async with aiohttp.ClientSession() as session:
-                headers = {"User-Agent": get_user_agents()[0]}
+                headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
                 proxy = request.proxy if request.proxy else None
                 
                 async with session.get(wayback_url, headers=headers, proxy=proxy) as response:

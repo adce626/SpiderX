@@ -5,11 +5,14 @@ description = "Add your description here"
 requires-python = ">=3.11"
 dependencies = [
     "aiohttp>=3.12.15",
+    "beautifulsoup4>=4.13.4",
     "colorama>=0.4.6",
     "fastapi>=0.116.1",
     "jinja2>=3.1.6",
     "pydantic>=2.11.7",
     "python-multipart>=0.0.20",
     "requests>=2.32.4",
+    "tqdm>=4.67.1",
     "uvicorn>=0.35.0",
+    "x6tunnel>=0.2.0",
 ]
