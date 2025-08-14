@@ -8,8 +8,12 @@ Common utilities for logging, progress tracking, and formatting
 import logging
 import sys
 import time
-from typing import List
+import random
+import re
+from typing import List, Dict, Set
+from urllib.parse import urlparse, parse_qs
 from tqdm import tqdm
+from colorama import Fore, Style, init
 
 
 def setup_logging(verbose: bool = False, debug: bool = False):
@@ -52,6 +56,149 @@ def print_banner():
     print("    🎯  Intelligent filtering and comprehensive analysis")
     print("    ⚡  High-performance async processing")
     print("")
+
+# Initialize colorama
+init(autoreset=True)
+
+def get_user_agents() -> List[str]:
+    """Get a list of realistic user agents for web requests"""
+    return [
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36", 
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Safari/605.1.15",
+        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    ]
+
+def get_random_user_agent() -> str:
+    """Get a random user agent"""
+    return random.choice(get_user_agents())
+
+def clean_url(url: str) -> str:
+    """Clean URL by removing redundant port information"""
+    try:
+        parsed = urlparse(url)
+        if (parsed.port == 80 and parsed.scheme == "http") or (parsed.port == 443 and parsed.scheme == "https"):
+            netloc = parsed.netloc.rsplit(":", 1)[0]
+            parsed = parsed._replace(netloc=netloc)
+        return parsed.geturl()
+    except Exception:
+        return url
+
+def has_extension(url: str, extensions: List[str] = None) -> bool:
+    """Check if URL has a file extension"""
+    if extensions is None:
+        extensions = [
+            ".jpg", ".jpeg", ".png", ".gif", ".pdf", ".svg", ".json",
+            ".css", ".js", ".webp", ".woff", ".woff2", ".eot", ".ttf", 
+            ".otf", ".mp4", ".mp3", ".avi", ".mov", ".txt", ".xml", ".ico",
+            ".zip", ".rar", ".tar", ".gz", ".doc", ".docx", ".xls", ".xlsx"
+        ]
+    
+    try:
+        parsed = urlparse(url)
+        path = parsed.path.lower()
+        return any(path.endswith(ext) for ext in extensions)
+    except Exception:
+        return False
+
+def extract_domain(url: str) -> str:
+    """Extract domain from URL"""
+    try:
+        parsed = urlparse(url)
+        return parsed.netloc.lower()
+    except Exception:
+        return url
+
+def is_same_domain(url1: str, url2: str) -> bool:
+    """Check if two URLs are from the same domain"""
+    return extract_domain(url1) == extract_domain(url2)
+
+def validate_url(url: str) -> bool:
+    """Validate if URL is properly formatted"""
+    try:
+        result = urlparse(url)
+        return all([result.scheme, result.netloc])
+    except Exception:
+        return False
+
+def detect_potential_vulnerability_params(params: Set[str]) -> Dict[str, List[str]]:
+    """Detect parameters that might indicate vulnerabilities - LEGENDARY FEATURE"""
+    vuln_patterns = {
+        'xss_potential': ['search', 'query', 'q', 'keyword', 'term', 'input', 'data', 'content', 'msg', 'message'],
+        'sqli_potential': ['id', 'uid', 'user_id', 'product_id', 'item_id', 'post_id', 'page_id', 'category_id'],
+        'lfi_potential': ['file', 'path', 'page', 'include', 'template', 'view', 'load', 'read'],
+        'redirect_potential': ['url', 'redirect', 'next', 'return', 'continue', 'goto', 'target', 'dest'],
+        'api_potential': ['key', 'token', 'api_key', 'access_token', 'auth', 'secret', 'password'],
+        'debug_potential': ['debug', 'test', 'dev', 'admin', 'trace', 'verbose', 'log']
+    }
+    
+    found_vulns = {}
+    for vuln_type, patterns in vuln_patterns.items():
+        matches = []
+        for param in params:
+            param_lower = param.lower()
+            for pattern in patterns:
+                if pattern in param_lower or param_lower.startswith(pattern):
+                    matches.append(param)
+                    break
+        if matches:
+            found_vulns[vuln_type] = matches
+    
+    return found_vulns
+
+def analyze_parameter_complexity(params: Set[str]) -> Dict[str, int]:
+    """Analyze parameter complexity for fuzzing priority - LEGENDARY FEATURE"""
+    complexity_scores = {}
+    
+    for param in params:
+        score = 0
+        param_lower = param.lower()
+        
+        # Length bonus
+        if len(param) > 3:
+            score += 1
+        if len(param) > 6:
+            score += 2
+            
+        # Complexity patterns
+        if '_' in param or '-' in param:
+            score += 2
+        if any(char.isdigit() for char in param):
+            score += 1
+        if param.endswith('_id') or param.endswith('Id'):
+            score += 3
+        if any(keyword in param_lower for keyword in ['search', 'query', 'input', 'data']):
+            score += 4
+        if any(keyword in param_lower for keyword in ['admin', 'user', 'auth', 'key']):
+            score += 5
+            
+        complexity_scores[param] = score
+    
+    return complexity_scores
+
+def smart_rate_limit(domain: str, request_count: int) -> float:
+    """Smart rate limiting based on domain and request count - LEGENDARY FEATURE"""
+    # Base delay
+    base_delay = 0.1
+    
+    # Popular domains get more aggressive rate limiting
+    popular_domains = ['google.com', 'facebook.com', 'youtube.com', 'amazon.com', 'twitter.com']
+    if any(pop_domain in domain for pop_domain in popular_domains):
+        base_delay = 1.0
+    
+    # Increase delay based on request count
+    if request_count > 100:
+        base_delay *= 1.5
+    if request_count > 500:
+        base_delay *= 2.0
+    if request_count > 1000:
+        base_delay *= 3.0
+    
+    # Add some randomization to avoid detection
+    return base_delay + random.uniform(0, base_delay * 0.5)
+
 
 
 def print_info(message: str):
