@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpiderX - Advanced URL Parameter Mining Tool</title>
+    <meta name="description" content="SpiderX is an advanced URL parameter mining tool that extracts and analyzes URLs from Wayback Machine with intelligent filtering and modern interface.">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/static/style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#" data-testid="navbar-brand">
+                <i class="fas fa-spider me-2"></i>
+                SpiderX
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <button class="btn btn-outline-light btn-sm" id="themeToggle" data-testid="button-theme-toggle">
+                            <i class="fas fa-moon"></i> Dark Mode
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="hero-section text-center">
+                    <h1 class="display-4 mb-3" data-testid="text-title">
+                        <i class="fas fa-spider text-primary me-3"></i>
+                        SpiderX
+                    </h1>
+                    <p class="lead text-muted" data-testid="text-subtitle">
+                        Advanced URL Parameter Mining Tool
+                    </p>
+                    <p class="text-muted" data-testid="text-description">
+                        Extract and analyze URLs with parameters from Wayback Machine archives with intelligent filtering and comprehensive analysis.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Interface -->
+        <div class="row">
+            <!-- Configuration Panel -->
+            <div class="col-lg-4 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-cogs me-2"></i>
+                            Configuration
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="scanForm" data-testid="form-scan">
+                            <!-- Domains Input -->
+                            <div class="mb-3">
+                                <label for="domains" class="form-label">Target Domains</label>
+                                <textarea class="form-control" id="domains" rows="4" 
+                                         placeholder="example.com&#10;test.com&#10;subdomain.example.com"
+                                         data-testid="input-domains"></textarea>
+                                <div class="form-text">Enter one domain per line</div>
+                            </div>
+
+                            <!-- Advanced Options -->
+                            <div class="mb-3">
+                                <button class="btn btn-outline-secondary btn-sm w-100" type="button" 
+                                        data-bs-toggle="collapse" data-bs-target="#advancedOptions"
+                                        data-testid="button-advanced-options">
+                                    <i class="fas fa-chevron-down me-2"></i>
+                                    Advanced Options
+                                </button>
+                            </div>
+
+                            <div class="collapse" id="advancedOptions">
+                                <!-- Placeholder -->
+                                <div class="mb-3">
+                                    <label for="placeholder" class="form-label">Parameter Placeholder</label>
+                                    <input type="text" class="form-control" id="placeholder" value="FUZZ"
+                                           data-testid="input-placeholder">
+                                    <div class="form-text">Placeholder value for URL parameters</div>
+                                </div>
+
+                                <!-- Proxy -->
+                                <div class="mb-3">
+                                    <label for="proxy" class="form-label">Proxy (Optional)</label>
+                                    <input type="text" class="form-control" id="proxy" 
+                                           placeholder="http://127.0.0.1:8080"
+                                           data-testid="input-proxy">
+                                    <div class="form-text">HTTP proxy for requests</div>
+                                </div>
+
+                                <!-- Max URLs -->
+                                <div class="mb-3">
+                                    <label for="maxUrls" class="form-label">Max URLs per Domain</label>
+                                    <input type="number" class="form-control" id="maxUrls" value="10000" min="100" max="50000"
+                                           data-testid="input-max-urls">
+                                </div>
+
+                                <!-- Filter Options -->
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="filterExtensions" checked
+                                               data-testid="checkbox-filter-extensions">
+                                        <label class="form-check-label" for="filterExtensions">
+                                            Filter Static File Extensions
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="includeSubdomains"
+                                               data-testid="checkbox-include-subdomains">
+                                        <label class="form-check-label" for="includeSubdomains">
+                                            Include Subdomains
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Start Button -->
+                            <button type="submit" class="btn btn-primary btn-lg w-100" id="startScan"
+                                    data-testid="button-start-scan">
+                                <i class="fas fa-play me-2"></i>
+                                Start Scanning
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Panel -->
+            <div class="col-lg-8">
+                <!-- Status Card -->
+                <div class="card shadow-sm mb-4" id="statusCard" style="display: none;">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-chart-line me-2"></i>
+                            Scan Status
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Progress</label>
+                                    <div class="progress">
+                                        <div class="progress-bar" role="progressbar" style="width: 0%" 
+                                             id="progressBar" data-testid="progress-bar">0%</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Status</label>
+                                    <div id="scanStatus" class="badge bg-secondary" data-testid="text-scan-status">Ready</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <div class="h4 mb-0" id="urlsFound" data-testid="text-urls-found">0</div>
+                                    <small class="text-muted">URLs Found</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <div class="h4 mb-0" id="urlsWithParams" data-testid="text-urls-with-params">0</div>
+                                    <small class="text-muted">With Parameters</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <div class="h4 mb-0" id="uniqueParams" data-testid="text-unique-params">0</div>
+                                    <small class="text-muted">Unique Parameters</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results Card -->
+                <div class="card shadow-sm" id="resultsCard" style="display: none;">
+                    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-list me-2"></i>
+                            Results
+                        </h5>
+                        <div class="btn-group">
+                            <button class="btn btn-light btn-sm" onclick="downloadResults('json')" data-testid="button-download-json">
+                                <i class="fas fa-download me-1"></i>JSON
+                            </button>
+                            <button class="btn btn-light btn-sm" onclick="downloadResults('txt')" data-testid="button-download-txt">
+                                <i class="fas fa-download me-1"></i>TXT
+                            </button>
+                            <button class="btn btn-light btn-sm" onclick="downloadResults('csv')" data-testid="button-download-csv">
+                                <i class="fas fa-download me-1"></i>CSV
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- Filter Controls -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" id="filterUrls" 
+                                       placeholder="Filter URLs..." data-testid="input-filter-urls">
+                            </div>
+                            <div class="col-md-6">
+                                <select class="form-select" id="filterDomain" data-testid="select-filter-domain">
+                                    <option value="">All Domains</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Results Table -->
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="resultsTable">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Domain</th>
+                                        <th>URL</th>
+                                        <th>Parameters</th>
+                                        <th>Count</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="resultsTableBody" data-testid="table-results">
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Domain Statistics -->
+                        <div class="mt-4">
+                            <h6>Domain Statistics</h6>
+                            <div id="domainStats" data-testid="container-domain-stats"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Modal -->
+    <div class="modal fade" id="loadingModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center py-4">
+                    <div class="spinner-border text-primary mb-3" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <h5>Scanning in Progress...</h5>
+                    <p class="text-muted mb-0">This may take a few minutes depending on the number of domains.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="/static/app.js"></script>
+</body>
+</html>
