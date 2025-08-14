@@ -21,7 +21,7 @@ SpiderX is an advanced URL parameter mining tool that extracts and analyzes URLs
 8. **Advanced Analytics**: Parameter frequency analysis, comprehensive reports
 
 ## User Preferences
-- Language: English (Arabic comments in code for user)
+- Language: English only (completely English interface)
 - Technology: Python-based with CLI focus
 - Design: Legendary and competitive tool
 - Ease of use: Extremely high priority
@@ -41,6 +41,6 @@ SpiderX is an advanced URL parameter mining tool that extracts and analyzes URLs
 - ✓ Multiple export formats: TXT, CSV, JSON with metadata (vs ParamSpider's TXT only)
 - ✓ High-performance async processing (vs ParamSpider's single-threaded)
 - ✓ Comprehensive vulnerability analysis and parameter intelligence
-- ✓ Arabic/English bilingual interface with professional output
+- ✓ English-only professional interface with clean output
 - ✓ Complete competitive superiority over ParamSpider established
-- تاريخ: 14 أغسطس 2025 - النسخة الأسطورية المكتملة
+- Date: August 14, 2025 - Legendary English-only version completed

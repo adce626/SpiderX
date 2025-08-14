@@ -1,6 +1,5 @@
 """
 Utility Functions
-وظائف مساعدة للأداة الأسطورية
 
 Common utilities for logging, progress tracking, and formatting
 """
@@ -47,7 +46,7 @@ def print_banner():
     ║   ╚══════╝╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝        ║
     ║                                                               ║
     ║           Advanced URL Parameter Mining Tool                  ║
-    ║              الأداة الأسطورية لاستخراج المعاملات             ║
+    ║          Legendary Parameter Discovery & Analysis             ║
     ║                                                               ║
     ╚═══════════════════════════════════════════════════════════════╝
     """

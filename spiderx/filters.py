@@ -1,6 +1,5 @@
 """
 Parameter Filtering Module
-وحدة تصفية المعاملات الذكية
 
 Intelligent parameter filtering with customizable boring parameters and wildcard support
 """
@@ -17,7 +16,7 @@ class ParameterFilter:
     def __init__(self, args):
         self.args = args
         
-        # Default boring parameters - معاملات مملة افتراضية
+        # Default boring parameters
         self.default_boring_params = {
             # Tracking and Analytics
             'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content',
